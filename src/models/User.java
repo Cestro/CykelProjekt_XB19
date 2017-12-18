@@ -11,12 +11,12 @@ public class User {
     private int type;
     private boolean addToTeam = false;
 
-    private String newName;
-    private int newAge;
-    private String newFirm;
-    private String newEmail;
-    private String newCyclistType;
-    private int newPassword;
+//    private String newName;
+//    private int newAge;
+//    private String newFirm;
+//    private String newEmail;
+//    private String newCyclistType;
+//    private int newPassword;
 
     public User(String name, int age, String firm, String email, String cyclistType, String password, int type) {
         this.name = name;
@@ -64,27 +64,27 @@ public class User {
         return addToTeam;
     }
 
-    public void setnewName(String newName) {
-        this.newName = newName;
+    public void setnewName(String name) {
+        this.name = name;
     }
 
-    public void setnewAge(int newAge) {
-        this.newAge = newAge;
+    public void setnewAge(int age) {
+        this.age = age;
     }
 
-    public void setnewFirm(String newFirm) {
-        this.newFirm = newFirm;
+    public void setnewFirm(String firm) {
+        this.firm = firm;
     }
 
-    public void setnewEmail(String newEmail) {
-        this.newEmail = newEmail;
+    public void setnewEmail(String email) {
+        this.email = email;
     }
 
-    public void setnewCyclistType(String newCyclistType) {
-        this.newCyclistType = newCyclistType;
+    public void setnewCyclistType(String cyclistType) {
+        this.cyclistType = cyclistType;
     }
 
-    public void setnewPassword(int newPassword) {
-        this.newPassword = newPassword;
+    public void setnewPassword(String password) {
+        this.password = password;
     }
 }

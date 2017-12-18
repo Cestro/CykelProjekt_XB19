@@ -28,7 +28,7 @@ public class UserController {
             System.out.println("1) Tilknyt et hold");
             System.out.println("2) Ændr i egne oplysninger");
             System.out.println("3) Vis alle oplysningerne om et hold og dets deltagere");
-            System.out.println("4) Vis oplysningerne om alle tilmeldte hold og dets deltagere"); //ændret i tekst
+            System.out.println("4) Vis alle oplysningerne om alle hold og dets deltagere");
             System.out.println("5) Vis statistik over gennemsnitsalderen på forskellige hold");
             System.out.println("6) Vis oplysninger om én bestemt deltager");
             System.out.println("7) Log ud");
@@ -40,7 +40,7 @@ public class UserController {
                     joinTeam();
                     break;
                 case 2:
-                    chanceInformation();
+                    changeInformation();
                     break;
                 case 3:
                     sharedController.showParticipantsOfOneTeam(data.getTeams());
@@ -52,7 +52,7 @@ public class UserController {
                     sharedController.printStatistics(data.getTeams());
                     break;
                 case 6:
-                    printSingleParticipant();
+                    printSingleParticipantLimited();
                     break;
                 case 7:
                     currentUser = null;
@@ -71,20 +71,22 @@ public class UserController {
             int holdIndex = data.getTeams().indexOf(team);
             System.out.printf("%-5d %-15s %-15s\n", holdIndex, team.getTeam(), team.getFirm());
         }
-        int TilknytValg = input.nextInt();
-        data.getTeams().get(TilknytValg).getTeamParticipants().add(currentUser);
-    } //Done
+        int tilknytValg = input.nextInt();
+        data.getTeams().get(tilknytValg).getTeamParticipants().add(currentUser);
 
-    private void chanceInformation() {
-        {
+        System.out.println("Du er nu tilmeldt: " + data.getTeams().get(tilknytValg));
+
+    } //Næsten Done, samme problem som i slet deltager hvor brugeren ikke slettes fra hold.
+
+    private void changeInformation() {
             String newName;
             int newAge;
             String newFirm;
             String newEmail;
             String newCyclistType;
-            int newPassword;
+            String newPassword;
 
-            System.out.println("Indtast nyt navn: ");
+            System.out.println("Indtast nyt navn: " + currentUser.getName());
             newName = input.nextLine();
             currentUser.setnewName(newName);
 
@@ -105,15 +107,13 @@ public class UserController {
             System.out.println("Indtast ny CyclistType: ");
             newCyclistType = input.nextLine();
             currentUser.setnewCyclistType(newCyclistType);
-            //Der skal tastes "Enter" en ekstra gang hér, ved ikke hvorfor.
 
-            input.nextLine();
             System.out.println("Indtast nyt fire cifret password: ");
-            newPassword = input.nextInt();
+            newPassword = input.nextLine();
             currentUser.setnewPassword(newPassword);
 
+            System.out.println("Dine oplysninger er nu ændret");
         }
-    }
 
     //Deltagere ud fra hold sortering
     private void printAllLimited() {
@@ -147,7 +147,7 @@ public class UserController {
     } //Done
 
     //note til rapporten: man kunne sagtens lave vælg mellem hold først, dernæst deltager og få print.
-    private void printSingleParticipant() {
+    private void printSingleParticipantLimited() {
         System.out.println("Vælg deltager for at se oplysninger");
         System.out.printf("%-5s %-15s\n", "ID", "Navn");
             for (User user : data.getUsers()) {

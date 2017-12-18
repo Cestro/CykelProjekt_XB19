@@ -1,5 +1,6 @@
 package data;
 
+import com.sun.org.apache.xpath.internal.functions.FuncFalse;
 import models.Team;
 import models.User;
 
@@ -60,6 +61,7 @@ public class Data {
 
         team2.getTeamParticipants().add(user5);
         user5.setAddToTeam(true);
+
     }
 
     public ArrayList<User> getUsers() {

@@ -3,6 +3,8 @@ package controllers;
 import data.Data;
 import models.Team;
 import models.User;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TeamCaptainController {
@@ -17,10 +19,6 @@ public class TeamCaptainController {
         this.data = data;
         this.currentUser = currentUser;
         this.sharedController = new SharedController();
-    }
-
-    public TeamCaptainController(Data data) {
-        this.data = data;
     }
 
     public void showTeamCaptainMenu() {
@@ -41,24 +39,26 @@ public class TeamCaptainController {
                     changeTeamInformation();
                     break;
                 case 2:
-                    deleteUser();
-                    break;
+                    changeOwnInformation();
                 case 3:
-                    deleteTeam();
+                    deleteUser(data.getTeams());
                     break;
                 case 4:
-                    sharedController.showParticipantsOfOneTeam(data.getTeams());
+                    deleteTeam();
                     break;
                 case 5:
-                    printAll();
+                    sharedController.showParticipantsOfOneTeam(data.getTeams());
                     break;
                 case 6:
-                    sharedController.printStatistics(data.getTeams());
+                    printAll();
                     break;
                 case 7:
-                    showSingleParticipant();
+                    sharedController.printStatistics(data.getTeams());
                     break;
                 case 8:
+                    printSingleParticipant();
+                    break;
+                case 9:
                     currentUser = null;
                     break;
                 default:
@@ -69,7 +69,11 @@ public class TeamCaptainController {
     }
 
     private void changeTeamInformation() {
-        int teamInformationChange;
+        String newTeamName;
+        String newTeamFirm;
+
+        int indexOfTeamInformationToChange;
+        Team teamToChange;
 
         System.out.println("Vælg Team som skal ændres: \n");
         System.out.printf("%-5s %-15s\n", "ID", "Navn");
@@ -77,41 +81,48 @@ public class TeamCaptainController {
             int holdIndex = data.getTeams().indexOf(team);
             System.out.printf("%-5d %-15s %-15s\n", holdIndex, team.getTeam(), team.getFirm());
         }
-        teamInformationChange = input.nextInt();
 
-        this.data.getTeams();
-    } //Ikke done...
+        indexOfTeamInformationToChange = input.nextInt();
 
-    private void deleteUser() {
-        /*
+        teamToChange = data.getTeams().get(indexOfTeamInformationToChange);
+
+        System.out.println("Indtast nyt hold navn: ");
+        input.nextLine(); //Ellers skipper den nextLine inputtet
+        newTeamName = input.nextLine();
+
+        System.out.println("Indtast nyt firma: ");
+        newTeamFirm = input.nextLine();
+
+        teamToChange.setNewTeamName(newTeamName);
+        teamToChange.setNewTeamFirm(newTeamFirm);
+
+        System.out.println("Nyt navn er: " + teamToChange.getTeam());
+        System.out.println("Nyt firma er: " + teamToChange.getFirm());
+
+    } //Done
+
+    private void deleteUser(ArrayList<Team> theTeams) {
+
         System.out.println("Tast User-ID for at slette en bruger\n");
         System.out.printf("%-5s %-15s %-15s %-15s %-30s %-15s %-15s\n", "ID", "Navn", "Alder", "Virksomhed", "E-mail", "Cyklisttype", "Kodeord");
         for (User user : data.getUsers()) {
             int deltagerIndex = data.getUsers().indexOf(user);
             System.out.printf("%-5s %-15s %-15s %-15s %-30s %-15s %-15s\n", deltagerIndex, user.getName(), user.getAge(), user.getFirm(), user.getEmail(), user.getCyclistType(), user.getPassword());
         }
-        int SletDeltagerIndex = input.nextInt();
 
-        this.data.getUsers().remove(SletDeltagerIndex);
+        int i = input.nextInt();
+        User sletValg = data.getUsers().get(i);//skal get i være der
+        System.out.printf("%-15s %-15s\n", sletValg.getName(), sletValg.getAge());
+//        String sletID = data.getUsers().get(i).getEmail(); //ved ikke om den her linje er vigtig længere
+        this.data.getUsers().remove(sletValg);
 
-        for (Team team : data.getTeams()) {
-            team.getTeamParticipants().remove(SletDeltagerIndex);
+        for (Team theTeam : theTeams) {
+            if(theTeam.getTeamParticipants().contains(sletValg)){
+                theTeam.getTeamParticipants().remove(sletValg);
+            }
         }
-        System.out.println("Deltageren er nu slettet");
-        */
 
-        int SletDeltagerIndex;
-        plsWork();
-
-        SletDeltagerIndex = input.nextInt();
-        this.data.getUsers().remove(SletDeltagerIndex);
-
-        for (Team team : data.getTeams()) {
-            team.getTeamParticipants().remove(SletDeltagerIndex);
-        }
-        System.out.println("Deltageren er nu slettet");
-
-        plsWork();
+        System.out.println("Deltageren er nu slettet fra holdet");
 
 //        printAll();
     } //Ikke done mere lige pludseligt??
@@ -134,9 +145,9 @@ public class TeamCaptainController {
         for (Team team : data.getTeams()){
             int holdIndex = data.getTeams().indexOf(team);
             System.out.printf("%-15d %-15s %-15s\n", holdIndex, team.getTeam(), team.getFirm());
-        }
 
-    } //Virker som det skal
+        }
+    } //Virker som det skal, med mangler.
 
     private void printAll() {
         System.out.println("Oversigt over alle hold og tilhørende deltagere, samt utilmeldte deltagere");
@@ -171,7 +182,7 @@ public class TeamCaptainController {
 
     //note til rapporten: man kunne evt. gøre sådan man kan vælge mellem hold først, dernæst deltager og få print.
     // Her skal der også tilføjes en: if type == null, abort, så holdkaptajner ikke kan ses hinandens data, hvis muligt.
-    private void showSingleParticipant() {
+    private void printSingleParticipant() {
         System.out.println("Vælg deltager for at se alle oplysningerne");
         System.out.printf("%-5s %-15s\n", "ID", "Navn");
         for (User user : data.getUsers()) {
@@ -183,14 +194,45 @@ public class TeamCaptainController {
         User valgUser = data.getUsers().get(valgteBrugerIndex);
         System.out.printf("%-15s %-15s %-15s %-20s %-15s %-15s\n", valgUser.getName(), valgUser.getAge(), valgUser.getFirm(), valgUser.getEmail(), valgUser.getCyclistType(), valgUser.getPassword());
 
+
+
     } // Done
 
-    private void plsWork() {
-        System.out.printf("%-5s %-15s\n", "ID", "Navn");
-            for (User user : data.getUsers()) {
-                int deltagerIndex = data.getUsers().indexOf(user);
-                System.out.printf("%-5d %-15s\n", deltagerIndex, user.getName());
-            }
-    }
+    private void changeOwnInformation() {
+            String newName;
+            int newAge;
+            String newFirm;
+            String newEmail;
+            String newCyclistType;
+            String newPassword;
+
+            System.out.println("Indtast nyt holdkaptajn navn: " + currentUser.getName());
+            newName = input.nextLine();
+            currentUser.setnewName(newName);
+
+            input.nextLine();
+            System.out.println("Indtast ny alder: ");
+            newAge = input.nextInt();
+            currentUser.setnewAge(newAge);
+
+            System.out.println("Indtast nyt firma: ");
+            newFirm = input.nextLine();
+            currentUser.setnewFirm(newFirm);
+
+            input.nextLine();
+            System.out.println("Indtast ny Email: ");
+            newEmail = input.nextLine();
+            currentUser.setnewEmail(newEmail);
+
+            System.out.println("Indtast ny CyclistType: ");
+            newCyclistType = input.nextLine();
+            currentUser.setnewCyclistType(newCyclistType);
+
+            System.out.println("Indtast nyt fire cifret password: ");
+            newPassword = input.nextLine();
+            currentUser.setnewPassword(newPassword);
+
+            System.out.println("Dine oplysninger er nu ændret");
+        }
 }
 

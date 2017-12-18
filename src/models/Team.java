@@ -7,6 +7,9 @@ public class Team {
     private String firm;
     private ArrayList<User> users;
 
+    //private String newTeamName;
+    //private String newTeamFirm;
+
     public Team(String teamName, String firm) {
         this.teamName = teamName;
         this.firm = firm;
@@ -21,7 +24,7 @@ public class Team {
         return firm;
     }
 
-    public ArrayList<User> getTeamParticipants() { //renamed pga. potentiel navnekonflikt (hvis det er til at løse)
+    public ArrayList<User> getTeamParticipants() {
         return users;
     }
 
@@ -36,4 +39,14 @@ public class Team {
 
         return age;
     }
+
+    public void setNewTeamName (String teamName) {
+        this.teamName = teamName;
+    }
+
+    public void setNewTeamFirm (String firm) {
+        this.firm = firm;
+    }
+
 }
+

@@ -1,6 +1,5 @@
 package controllers;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import models.Team;
 import models.User;
 import data.Data;
@@ -17,7 +16,10 @@ public class GuestController {
         this.data = data;
     }
 
-    public void ShowGuestMenu() {
+    /**
+     * Her benyttes først en switch til at
+     */
+    public void showGuestMenu() {
         int choice = 3; //Det her er bare en basisværdi der bliver ændret senere
 
 
@@ -29,6 +31,7 @@ public class GuestController {
         System.out.println("1) Login med dine brugeroplysninger");
         System.out.println("2) Ny bruger");
         System.out.println("0) Afslut programmet");
+
 
         try {
             choice = input.nextInt();
@@ -66,10 +69,7 @@ public class GuestController {
         System.out.println("Indtast Password: ");
         Password = input.next();
 
-        User
-                currentUser = authBruger(email, Password);
-//        deltagerController.setCurrentBruger(currentUser);
-//        holdkaptajnController.setCurrentBruger(currentUser);
+        User currentUser = authBruger(email, Password);
 
         if (currentUser != null) {
             if (currentUser.getType() == 1) {
@@ -107,48 +107,56 @@ public class GuestController {
         System.out.println("Du kan nu vælge følgende: ");
         System.out.println("1) Opret som ny deltager");
         System.out.println("2) Opret som ny holdkaptajn og lav et nyt hold");
+        System.out.println("3) Gå tilbage");
 
         valg2 = input.nextInt();
-        input.nextLine();
+        input.nextLine(); //Indsættes for at undgå scanneren skipper input.
 
         switch (valg2) {
             case 1:
-                NewParticipant();
+                newParticipant();
                 break;
-
             case 2:
                 newTeamCaptain();
                 break;
+            case 3:
+                showGuestMenu();
         }
 
     }
 
-    private void NewParticipant() {
+    /**
+     * Først oprettes de variable som skal oprettes.
+     * Efterfølgende indtastes hver lokale variable.
+     * Til slut tilføjes de nye lokale variable til User ArrayListen.
+     */
+    private void newParticipant() {
         String name;
         int age;
         String firm;
-        String email = "";
+        String email;
         String cyclistType;
         String password;
         int type = 1;
 
         System.out.println("Du har valgt at oprette dig som user, indtast følgende informationer:");
-        System.out.println("Fulde name: ");
+        System.out.println("Fulde navn: ");
         name = input.nextLine();
 
-        System.out.println("Alder: ");      //lav en redo funktion, hvis man skriver forkert, fx. hvis man skriver bogstaver i stedet for tal.
+        System.out.println("Alder: ");                                                                                       //lav en redo funktion, hvis man skriver forkert, fx. hvis man skriver bogstaver i stedet for tal.
         age = input.nextInt();
 
-        input.nextLine();   //Laver denne nextLine, fordi scanneren for koden til at springe en linje over.
+        //Laver den efterfølgende nextLine, fordi scanneren for koden til at springe en linje over.
+        input.nextLine();
         System.out.println("Virksomhed: ");
         firm = input.nextLine();
 
-        System.out.println("E-mail: ");
-        while(!email.contains("@") || !email.contains(".")); {
-            email = input.nextLine();
-        }
+        System.out.println("E-mail (skal indeholde @ og . for at være en gyldig E-mail): ");
+        do { email = input.nextLine(); }
+        while (!email.contains("@") || !email.contains("."));
+        //System.out.println("Du har ikke indtastet en gyldig Email, prøv igen");
 
-        System.out.println("Cyklisttype: ");
+        System.out.println("Cyklisttype (Fx: Amatør, Øvet eller professionel): ");
         cyclistType = input.nextLine();
 
         System.out.println("Opret et password på fire cifre til login: ");
@@ -160,8 +168,14 @@ public class GuestController {
         User user = new User(name, age, firm, email, cyclistType, password, type);
         this.data.getUsers().add(user);
 
-    }
+        System.out.println("Deltager oprettet");
 
+    }
+    /**
+     * Først oprettes de variable som skal oprettes.
+     * Efterfølgende indtastes hver lokale variable.
+     * Til slut tilføjes de nye lokale variable til henholdsvis User og Team ArrayListen. Så der bliver oprettet en deltager og et hold.
+     */
     private void newTeamCaptain() {
         String name;
         int age;
@@ -206,9 +220,6 @@ public class GuestController {
         this.data.getUsers().add(user);
         this.data.getTeams().add(team);
 
-        for (User user1 : this.data.getUsers()) {
-            System.out.println(user1);
-
-        }
+        System.out.println("Holdkaptajnen er nu oprettet");
     }
 }
